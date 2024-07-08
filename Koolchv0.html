@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koolch.AI</title>
+    <script src="https://unpkg.com/unlazy@0.11.3/dist/unlazy.with-hashing.iife.js" defer init></script>
+    <style>
+        :root {
+            --background: hsl(0, 1%, 15%);
+            --foreground: hsl(0, 0%, 98%);
+            --primary: hsl(240, 5.9%, 10%);
+            --primary-foreground: hsl(0, 0%, 98%);
+            --secondary: hsl(240, 4.8%, 95.9%);
+            --secondary-foreground: hsl(240, 5.9%, 10%);
+            --card: hsl(0, 1%, 15%);
+            --card-foreground: hsl(240, 10%, 3.9%);
+            --border: hsl(240, 5.9%, 90%);
+            --radius: 0.5rem;
+        }
+        .dark {
+            --background: hsl(240, 10%, 3.9%);
+            --foreground: hsl(0, 0%, 98%);
+            --primary: hsl(0, 0%, 98%);
+            --primary-foreground: hsl(240, 5.9%, 10%);
+            --secondary: hsl(240, 3.7%, 15.9%);
+            --secondary-foreground: hsl(0, 0%, 98%);
+            --card: hsl(240, 10%, 3.9%);
+            --card-foreground: hsl(0, 0%, 98%);
+            --border: hsl(240, 3.7%, 15.9%);
+        }
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+        header {
+            background-color: var(--primary);
+            width: 100%;
+            padding: 1rem 0;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        nav img {
+            height: 3rem;
+        }
+        nav ul {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li a {
+            color: var(--primary-foreground);
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            color: hsla(240, 5.9%, 10%, 0.8);
+        }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+        main h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        main p {
+            font-size: 1.125rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+        }
+        main button {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        main button:hover {
+            background-color: hsla(240, 5.9%, 10%, 0.8);
+        }
+        section {
+            background-color: var(--card);
+            width: 100%;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .services {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        @media (min-width: 640px) {
+            .services {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (min-width: 1024px) {
+            .services {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        .service {
+            padding: 1rem;
+            background-color: var(--card);
+            border-radius: var(--radius);
+        }
+        .service img {
+            height: 6rem;
+            margin-bottom: 1rem;
+        }
+        .service h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .service p {
+            color: var(--secondary);
+        }
+        footer {
+            background-color: var(--primary);
+            width: 100%;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+        footer p {
+            color: var(--primary-foreground);
+            text-align: center;
+            margin: 0;
+        }
+        footer ul {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0;
+        }
+        footer ul li a {
+            color: var(--primary-foreground);
+            text-decoration: none;
+        }
+        footer ul li a:hover {
+            color: hsla(240, 5.9%, 10%, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="https://placehold.co/150" alt="company-logo">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>The AI Automaton</h1>
+        <p>Harnessing the power of automated AI networks</p>
+        <button>Coming soon</button>
+    </main>
+    <section>
+        <h2>Our Services</h2>
+        <div class="services">
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-1">
+                <h3>Data Analysis</h3>
+                <p>Harness the power of data with our advanced analysis tools.</p>
+            </div>
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-2">
+                <h3>Machine Learning</h3>
+                <p>Implement machine learning models for predictive analytics.</p>
+            </div>
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-3">
+                <h3>AI Consulting</h3>
+                <p>Expert consultancy to integrate AI into your business strategy.</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2024 Koolch.ai. All rights reserved.</p>
+        <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </footer>
+</body>
+</html>
