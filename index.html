@@ -85,14 +85,21 @@
         main button {
             background-color: var(--primary);
             color: var(--primary-foreground);
-            padding: 0.5rem 1rem;
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
             border: none;
             border-radius: var(--radius);
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+
         main button:hover {
             background-color: hsla(240, 5.9%, 10%, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
+
         section {
             background-color: var(--card);
             width: 100%;
@@ -187,18 +194,33 @@
         <div class="services">
             <div class="service">
                 <img src="https://placehold.co/150" alt="service-1">
-                <h3>Data Analysis</h3>
-                <p>Harness the power of data with our advanced analysis tools.</p>
+                <h3>Market Intelligence</h3>
+                <p>Gather and analyze data to understand market trends and dynamics.</p>
             </div>
             <div class="service">
                 <img src="https://placehold.co/150" alt="service-2">
-                <h3>Machine Learning</h3>
-                <p>Implement machine learning models for predictive analytics.</p>
+                <h3>Specialized Content Generation</h3>
+                <p>Create tailored content for various needs and platforms.</p>
             </div>
             <div class="service">
                 <img src="https://placehold.co/150" alt="service-3">
-                <h3>AI Consulting</h3>
-                <p>Expert consultancy to integrate AI into your business strategy.</p>
+                <h3>Reporting Automation</h3>
+                <p>Automate your reporting process for efficiency and accuracy.</p>
+            </div>
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-4">
+                <h3>Personalized Workflows</h3>
+                <p>Design and implement workflows that cater to your specific requirements.</p>
+            </div>
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-5">
+                <h3>Synthetic Data Generation</h3>
+                <p>Create synthetic data to enhance your models and simulations.</p>
+            </div>
+            <div class="service">
+                <img src="https://placehold.co/150" alt="service-6">
+                <h3>Knowledge Management</h3>
+                <p>Organize and manage knowledge for better accessibility and usability.</p>
             </div>
         </div>
     </section>
