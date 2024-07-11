@@ -26,6 +26,7 @@
         async function fetchBlogPosts() {
             try {
                 const indexResponse = await fetch('/blog/posts.json');
+                console.log(indexResponse)
                 const postFiles = await indexResponse.json();
 
                 const blogGrid = document.querySelector('.blog-grid');
