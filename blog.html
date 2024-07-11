@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Koolch.AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.body.insertAdjacentHTML('afterbegin', data);
+                });
+
+            fetch('footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.body.insertAdjacentHTML('beforeend', data);
+                });
+        });
+    </script>
+    <style>
+        .blog-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        @media (min-width: 640px) {
+            .blog-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (min-width: 1024px) {
+            .blog-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        .blog-card {
+            padding: 1rem;
+            background-color: var(--card);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .blog-card img {
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+        .blog-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .blog-card p {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        .blog-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .blog-card .tags span {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section>
+            <h2>Blog</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <img src="https://placehold.co/300" alt="Blog 1">
+                    <h3>Blog Post Title 1</h3>
+                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
+                    <div class="tags">
+                        <span>AI</span>
+                        <span>Automation</span>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://placehold.co/300" alt="Blog 2">
+                    <h3>Blog Post Title 2</h3>
+                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
+                    <div class="tags">
+                        <span>Data</span>
+                        <span>Analysis</span>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://placehold.co/300" alt="Blog 3">
+                    <h3>Blog Post Title 3</h3>
+                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
+                    <div class="tags">
+                        <span>Content</span>
+                        <span>Generation</span>
+                    </div>
+                </div>
+                <!-- Add more blog cards as needed -->
+            </div>
+        </section>
+    </main>
+</body>
+</html>
