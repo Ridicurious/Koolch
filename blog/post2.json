@@ -1,7 +1,7 @@
 {
-    "title": "Blog Post Title 2",
-    "description": "Short description of the blog post. This is an introduction to the content of the blog.",
+    "title": "What is Grokking and What are the Latest Academic Developments on Grokking Research?",
+    "description": "The term 'grokking' originates from Robert A. Heinlein's science fiction novel 'Stranger in a Strange Land.' In contemporary contexts, grokking has found relevance in various fields including games-based learning and artificial intelligence (AI). This report aims to elucidate the concept of grokking and highlight the latest academic developments associated with it.",
     "image": "https://placehold.co/300",
-    "tags": ["Data", "Analysis"],
-    "date": "2024-07-02"
+    "tags": ["Grokking", "Deep Learning", "AI", "Representation Learning"],
+    "date": "2024-07-01"
 }
