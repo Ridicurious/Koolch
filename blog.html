@@ -18,7 +18,45 @@
                 .then(data => {
                     document.body.insertAdjacentHTML('beforeend', data);
                 });
+
+            // Fetch blog posts
+            fetchBlogPosts();
         });
+
+        async function fetchBlogPosts() {
+            try {
+                const indexResponse = await fetch('/blog/posts.json');
+                const postFiles = await indexResponse.json();
+
+                const blogGrid = document.querySelector('.blog-grid');
+                const posts = [];
+
+                for (const postFile of postFiles) {
+                    const response = await fetch(`/blog/${postFile.file}`);
+                    const post = await response.json();
+                    posts.push(post);
+                }
+
+                // Sort posts by date
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                posts.forEach(post => {
+                    const blogCard = document.createElement('div');
+                    blogCard.className = 'blog-card';
+
+                    blogCard.innerHTML = `
+                        <img src="${post.image}" alt="${post.title}">
+                        <h3>${post.title}</h3>
+                        <p>${post.description}</p>
+                        <div class="tags">${post.tags.map(tag => `<span>${tag}</span>`).join('')}</div>
+                    `;
+
+                    blogGrid.appendChild(blogCard);
+                });
+            } catch (error) {
+                console.error('Error fetching blog posts:', error);
+            }
+        }
     </script>
     <style>
         .blog-grid {
@@ -79,36 +117,7 @@
     <main>
         <section>
             <h2>Blog</h2>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <img src="https://placehold.co/300" alt="Blog 1">
-                    <h3>Blog Post Title 1</h3>
-                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
-                    <div class="tags">
-                        <span>AI</span>
-                        <span>Automation</span>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://placehold.co/300" alt="Blog 2">
-                    <h3>Blog Post Title 2</h3>
-                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
-                    <div class="tags">
-                        <span>Data</span>
-                        <span>Analysis</span>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://placehold.co/300" alt="Blog 3">
-                    <h3>Blog Post Title 3</h3>
-                    <p>Short description of the blog post. This is an introduction to the content of the blog.</p>
-                    <div class="tags">
-                        <span>Content</span>
-                        <span>Generation</span>
-                    </div>
-                </div>
-                <!-- Add more blog cards as needed -->
-            </div>
+            <div class="blog-grid"></div>
         </section>
     </main>
 </body>
