@@ -112,21 +112,29 @@ function loadInsight(insightId) {
     fetch(`insights/${insightId}.json`)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`); //  Handle 404s
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            //  Load the template, then inject the content.
             fetch('insights/template.html')
                 .then(response => response.text())
                 .then(templateHtml => {
-                    document.documentElement.innerHTML = templateHtml; // Replace entire document
+                    document.documentElement.innerHTML = templateHtml;
                     document.getElementById('report-content').innerHTML = data.report_content;
-                    //  Load header and footer *after* replacing the content.
                     loadComponent('components/header.html', 'header-container');
                     loadComponent('components/footer.html', 'footer-container');
-                    //animate(); //removed from here, called when components are called
+
+                    // Reinitialize nodes and animation
+                    nodes = []; // Clear existing nodes
+                    for (let i = 0; i < nodeCount; i++) {
+                        nodes.push(new Node());
+                    }
+                    for (let i = 0; i < pinkNodeCount; i++) {
+                        nodes[Math.floor(Math.random() * nodeCount)].color = "#e62a8e";
+                    }
+					resizeCanvas();
+                    animate(); // Restart the animation
                 });
         })
         .catch(error => {
