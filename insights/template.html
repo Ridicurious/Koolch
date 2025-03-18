@@ -3,32 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>AsturLabs AI - Insight</title>
-    <link rel="stylesheet" href="../style.css"> <!--  Relative path to CSS -->
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <div id="header-container"></div>
 
-    <div class="container">
+    <div class="container" id="main-content">
         <article id="report-content" class="report">
             <!-- Report content will be injected here -->
         </article>
     </div>
 
     <div id="footer-container"></div>
+    <canvas id="canvas"></canvas>
     <script src="../utils.js"></script>
-    <script>
-        // Load header and footer *within the iframe*
-        function loadComponent(url, containerId) {
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById(containerId).innerHTML = html;
-                })
-                .catch(error => console.error('Error loading component:', error));
-        }
-
-        loadComponent('../components/header.html', 'header-container');
-        loadComponent('../components/footer.html', 'footer-container');
-    </script>
+    <script src="../script.js"></script>
 </body>
 </html>
