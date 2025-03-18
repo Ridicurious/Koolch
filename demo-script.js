@@ -52,9 +52,9 @@ async function fetchLLMTopicData(companyName, division) {
     showThinkingOverlay(); // Show thinking overlay while "fetching"
 
     try {
-        // --- Initialize Generative AI and Model in Browser (Adapt as needed for browser compatibility) ---
-        const { GoogleGenerativeAI } = await import('@google/generative-ai'); // Dynamic import for browser - you might need to adjust this based on your setup
-        const genAI = new GoogleGenerativeAI(apiKey);
+        // --- Initialize Generative AI and Model using global object (from CDN) ---
+        // **No dynamic import needed anymore after CDN inclusion**
+        const genAI = new GoogleGenerativeAI(apiKey); // Use global GoogleGenerativeAI
         const model = genAI.getGenerativeModel({
             model: modelName,
             systemInstruction: systemInstruction,
