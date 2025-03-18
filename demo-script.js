@@ -1,5 +1,5 @@
 // --- Data (Simulating a more complex data structure) ---
-const topicData = {
+let topicData = { // Make topicData let so it can be updated
     "Artificial Intelligence": { suggested: ["Machine Learning", "Data Analytics", "Robotics", "Deep Learning", "Natural Language Processing"] },
     "Machine Learning": { suggested: ["Artificial Intelligence", "Data Analytics", "Deep Learning", "Reinforcement Learning", "Supervised Learning"] },
     "Cybersecurity": { suggested: ["Network Security", "Data Privacy", "Ethical Hacking", "Cryptography", "Malware Analysis"] },
@@ -23,8 +23,38 @@ const availableTopicsContainer = document.getElementById('available-topics');
 const selectedTopicsContainer = document.getElementById('selected-topics');
 const viewReportButton = document.getElementById('view-report-button');
 const thinkingOverlay = document.getElementById('thinking-overlay'); // Get the overlay
+const personalizeTopicsButton = document.getElementById('personalize-topics-button'); // New button
+const companyNameInput = document.getElementById('companyName'); // Company name input
+const divisionInput = document.getElementById('division'); // Division input
+
 
 // --- Functions ---
+
+// Placeholder function for LLM call
+async function fetchLLMTopicData(companyName, division) {
+    console.log("Calling LLM with Company:", companyName, "Division:", division);
+    showThinkingOverlay(); // Show thinking overlay while "fetching"
+
+    // Simulate LLM processing delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // --- Placeholder for LLM logic ---
+    // In a real implementation, this function would:
+    // 1. Send companyName and division to an LLM API.
+    // 2. Receive a response from the LLM, likely containing:
+    //    - A new set of topicData tailored for the company/division.
+    //    - Or, suggestions to modify the existing topicData or availableTopics.
+
+    // --- Example of a placeholder response (for demonstration) ---
+    // Here, we just log the inputs and return the original topicData.
+    // In a real scenario, you would process the LLM response here.
+
+    hideThinkingOverlay(); // Hide thinking overlay after "fetching"
+
+    // Return the (potentially modified) topicData
+    return topicData; // For now, return original, in real case, process LLM response to modify and return
+}
+
 
 function showThinkingOverlay() {
     thinkingOverlay.classList.add('active');
@@ -168,6 +198,21 @@ viewReportButton.addEventListener('click', () => {
         viewReportButton.textContent = 'View Report';
     }, 2000);
 });
+
+personalizeTopicsButton.addEventListener('click', async () => {
+    const companyName = companyNameInput.value;
+    const division = divisionInput.value;
+    await fetchLLMTopicData(companyName, division); // Call the placeholder LLM function
+    // After LLM call, you might want to update topicData, availableTopics, and re-render topics.
+    // For now, the placeholder LLM function just logs the company/division.
+    // If you want to update topics based on LLM response, you would do it here.
+    // For example:
+    // const newTopicData = await fetchLLMTopicData(companyName, division);
+    // topicData = newTopicData; // Update topicData
+    // availableTopics = Object.keys(topicData); // Re-initialize available topics
+    // renderTopics(); // Re-render the topics
+});
+
 
 // --- Initialization ---
 renderTopics();
