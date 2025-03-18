@@ -27,6 +27,22 @@ const personalizeTopicsButton = document.getElementById('personalize-topics-butt
 const companyNameInput = document.getElementById('companyName'); // Company name input
 const divisionInput = document.getElementById('division'); // Division input
 
+// --- LLM Configuration (Move API Key to a more secure location for production!) ---
+const apiKey = "AIzaSyDwaqRxXYmX9rJj7XWPDhmBor21d26AcCI"; // Replace with your actual API key.  Consider environment variables or backend proxy for security.
+const modelName = "gemini-2.0-flash-thinking-exp-01-21"; // Use the correct model name
+
+const generationConfig = {
+  temperature: 0.7,
+  topP: 0.95,
+  topK: 64,
+  maxOutputTokens: 65536,
+  responseMimeType: "text/plain",
+};
+
+const systemInstruction = `Your final output in json with topics and subtopics in the following format:
+{"Virtual Reality (VR)": { "suggested": ["Computer Vision", "3D Modeling", "Game Development", "User Interface Design", "Immersive Experiences"] },
+"Robotics": { "suggested": ["Artificial Intelligence", "Machine Learning", "Embedded Systems", "Control Systems", "Computer Vision"] }}`;
+
 
 // --- Functions ---
 
@@ -35,24 +51,48 @@ async function fetchLLMTopicData(companyName, division) {
     console.log("Calling LLM with Company:", companyName, "Division:", division);
     showThinkingOverlay(); // Show thinking overlay while "fetching"
 
-    // Simulate LLM processing delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+        // --- Initialize Generative AI and Model in Browser (Adapt as needed for browser compatibility) ---
+        const { GoogleGenerativeAI } = await import('@google/generative-ai'); // Dynamic import for browser - you might need to adjust this based on your setup
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({
+            model: modelName,
+            systemInstruction: systemInstruction,
+        });
 
-    // --- Placeholder for LLM logic ---
-    // In a real implementation, this function would:
-    // 1. Send companyName and division to an LLM API.
-    // 2. Receive a response from the LLM, likely containing:
-    //    - A new set of topicData tailored for the company/division.
-    //    - Or, suggestions to modify the existing topicData or availableTopics.
+        const chatSession = model.startChat({
+            generationConfig,
+            history: [], // No history needed for this single turn interaction
+        });
 
-    // --- Example of a placeholder response (for demonstration) ---
-    // Here, we just log the inputs and return the original topicData.
-    // In a real scenario, you would process the LLM response here.
+        const prompt = `As an employee of ${companyName || 'a company'} working in ${division || 'a division'}, what are the technological topics that might interest me? Please provide the response in JSON format as specified in the system instruction.`;
 
-    hideThinkingOverlay(); // Hide thinking overlay after "fetching"
+        const result = await chatSession.sendMessage(prompt);
+        const llmResponseText = result.response.text();
+        console.log("LLM Response Text:", llmResponseText);
 
-    // Return the (potentially modified) topicData
-    return topicData; // For now, return original, in real case, process LLM response to modify and return
+        // --- Parse JSON response from LLM ---
+        try {
+            const newTopicDataFromLLM = JSON.parse(llmResponseText);
+            console.log("Parsed Topic Data from LLM:", newTopicDataFromLLM);
+            topicData = newTopicDataFromLLM; // Update global topicData with LLM response
+
+        } catch (jsonError) {
+            console.error("Error parsing JSON response from LLM:", jsonError);
+            alert("Error processing AI response. Please check console for details.");
+            topicData = {}; // Reset topicData in case of error, or handle differently
+        }
+
+
+    } catch (llmError) {
+        console.error("Error calling LLM:", llmError);
+        alert("Failed to get personalized topics from AI. Please check console for details.");
+        topicData = {}; // Reset topicData in case of error, or handle differently
+    } finally {
+        hideThinkingOverlay(); // Hide thinking overlay after "fetching" (success or error)
+    }
+
+    return topicData; // Return the (potentially modified) topicData
 }
 
 
@@ -67,6 +107,12 @@ function hideThinkingOverlay() {
 function renderTopics() {
     availableTopicsContainer.innerHTML = '';
     selectedTopicsContainer.innerHTML = '';
+
+    if (!topicData || Object.keys(topicData).length === 0) {
+        availableTopicsContainer.textContent = "No topics available."; // Display message if no topics
+        return; // Exit if no topic data
+    }
+
 
     // Combine available and suggested topics, removing duplicates and selected topics.
     const allAvailable = [...new Set([...availableTopics, ...suggestedTopics])].filter(topic => !selectedTopics.includes(topic));
@@ -202,15 +248,18 @@ viewReportButton.addEventListener('click', () => {
 personalizeTopicsButton.addEventListener('click', async () => {
     const companyName = companyNameInput.value;
     const division = divisionInput.value;
-    await fetchLLMTopicData(companyName, division); // Call the placeholder LLM function
-    // After LLM call, you might want to update topicData, availableTopics, and re-render topics.
-    // For now, the placeholder LLM function just logs the company/division.
-    // If you want to update topics based on LLM response, you would do it here.
-    // For example:
-    // const newTopicData = await fetchLLMTopicData(companyName, division);
-    // topicData = newTopicData; // Update topicData
-    // availableTopics = Object.keys(topicData); // Re-initialize available topics
-    // renderTopics(); // Re-render the topics
+    const newTopicData = await fetchLLMTopicData(companyName, division); // Call the LLM function
+    if (newTopicData && Object.keys(newTopicData).length > 0) {
+        topicData = newTopicData; // Update topicData with the fetched data
+        availableTopics = Object.keys(topicData); // Re-initialize available topics from the new topicData
+    } else {
+        topicData = {}; // Or keep the old data, or handle as you see fit.
+        availableTopics = []; // No topics available if LLM failed and returned empty data.
+    }
+    suggestedTopics = []; // Clear suggested topics as the topic source has changed
+    selectedTopics = []; // Clear selected topics as the topic source has changed
+    renderTopics(); // Re-render the topics
+    updateViewReportButton(); // Update button state
 });
 
 
