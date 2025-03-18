@@ -6,6 +6,8 @@
     <title>Schedule a Demo - AsturLabs AI</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <!--  Include SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 </head>
 <body>
     <div id="header-container"></div>
@@ -15,35 +17,34 @@
             <h1>Schedule a Demo</h1>
             <p>Select your topics of interest to tailor your demo experience:</p>
 
-            <div class="topic-selection">
-                <div class="topic-column">
-                    <h2>Available Topics</h2>
-                    <ul id="available-topics">
-                        <!-- Topics will be populated here by JavaScript -->
-                    </ul>
-                </div>
-                <div class="topic-column">
-                    <h2>Selected Topics</h2>
-                    <ul id="selected-topics">
-                        <!-- Selected topics will appear here -->
-                    </ul>
-                </div>
-                <div class="topic-column">
-                    <h2>Suggested Topics</h2>
-                    <ul id="suggested-topics">
-                        <!-- Suggested topics will appear here -->
-                    </ul>
-                </div>
+            <div class="tag-cloud" id="available-topics">
+                <!-- Tags will be added here -->
             </div>
 
-            <button id="view-report-button" disabled>View Report</button>
+            <div class="drop-zone" id="selected-topics">
+              <h2>Selected Topics</h2>
+                <!-- Selected tags will be dragged here -->
+            </div>
+
+            <button id="view-report-button"
+                    class="cta-button"
+                    disabled
+                    aria-disabled="true">
+                View Report
+                <span class="tooltip">
+                    Select at least one topic to view a report.
+                </span>
+            </button>
         </section>
+        <div class="overlay" id="thinking-overlay">
+          Thinking...
+      </div>
     </div>
 
     <div id="footer-container"></div>
-	<canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
     <script src="utils.js"></script>
-    <script src="demo-script.js"></script> <!-- Separate script for demo page -->
+    <script src="demo-script.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
