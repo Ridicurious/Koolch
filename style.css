@@ -1,0 +1,252 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    height: 100%;
+    font-family: sans-serif;
+    /* font-family: Playfair Display, serif; */
+    /* No overall background-color here */
+}
+
+#canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    /*  Gradient background for the canvas */
+    background: linear-gradient(to right, #02103d, #063c70);
+    /* background: linear-gradient(to bottom, #02081a, #042042); */
+    /* background: linear-gradient(160deg, #02081a, #042042); */
+    /* background: linear-gradient(to right, #02081a, #042042); */
+    filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100vh;  /*  Ensure at least full viewport height */
+    display: flex;
+    flex-direction: column;
+     /* Content is still centered vertically in each section */
+
+}
+/* header {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+
+} */
+header {
+    position: sticky; /*  This is the key change */
+    top: 0; /*  Stick to the top */
+    /* Other existing styles */
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    /* background-color: rgba(0, 0, 0, 0.6);  */
+    backdrop-filter: blur(10px); /*  Add a blur effect (modern browsers) */
+    z-index: 100; /*  Ensure it's above other content */
+}
+
+.logo img {
+    height: 50px;
+    color: white;
+    vertical-align: middle;
+}
+
+    .logo svg {
+    width: 50px;
+    height: auto;
+    transition: transform 0.3s ease;
+    }
+
+    .logo path,
+    .logo polygon,
+    .logo rect {
+    fill: #007bff;
+    stroke: none;
+    transition: fill 0.3s ease, transform 0.3s ease;
+    }
+
+    .logo:hover svg {
+    transform: scale(1.1);
+    }
+
+    .logo:hover path,
+    .logo:hover polygon,
+    .logo:hover rect {
+    fill: #e62a8e;
+
+    transform: translateY(-2px);
+
+
+    }
+
+
+    .logo #node-highlight {
+    fill: #ffcc00;
+    transition: fill 0.3s ease, transform 0.3s ease;
+    }
+    .logo:hover #node-highlight {
+    fill: #ffd700;
+    transform: scale(1.2);
+    }
+   nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+
+    nav li {
+        margin-left: 30px; /* Increased spacing */
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        text-transform: uppercase;
+    }
+    nav a:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* More subtle */
+    }
+    .special-nav-item {
+        background-color: rgba(255, 255, 255, 0.1); /*Semi-transparent white*/
+        border-radius: 15px; /*Rounded corners. Adjust as needed*/
+        padding: 10px 15px; /*Padding to create space around the text*/
+    }
+    .special-nav-item:hover {
+        background-color: rgba(255, 255, 255, 0.2); /*Slightly more visible on hover*/
+    }
+
+    /*  Style for sections */
+    section {
+        min-height: 100vh; /* Each section takes at least the full viewport height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 40px;
+        box-sizing: border-box;  /* Important for padding */
+        color: white; /* Default text color for sections */
+    }
+
+    .hero {
+        /* Hero section specific styles */
+        padding: 0 20px; /* Less horizontal padding in hero */
+    }
+    .hero h1{
+        color: white;
+        font-size: 4em; /* Larger */
+        font-weight: bold; /* Bolder */
+        margin-bottom: 20px;
+    }
+
+    .hero p{
+        color: #dedcdc; /* Lighter gray */
+        font-size: 1.2em;
+        max-width: 600px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    .cta-button {
+        display: inline-block;
+        padding: 10px 20px; /* Adjusted padding - slightly smaller */
+        /* background-color: rgba(0, 170, 255, 0.2);  */
+        color: #fff; /* White text */
+        text-decoration: none;
+        border-radius: 25px; /* Much more rounded -  half the height (or more) */
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        border: 1px solid rgba(0, 170, 255, 0.5); /* Add a subtle border */
+        cursor: pointer;
+        font-size: 0.9em; /* Slightly smaller font size */
+        text-transform: uppercase; /* Match the original image */
+        letter-spacing: 0.05em; /* Add slight letter spacing */
+    }
+
+    .cta-button:hover {
+        background-color: rgba(0, 170, 255, 0.4); /* Slightly more opaque on hover */
+        border-color: rgba(0, 170, 255, 0.8); /* Darker border on hover */
+    }
+
+
+    /* Section-specific content (optional, but good for clarity) */
+    section:nth-child(2) { /* Style for the second section */
+       background-color: rgba(0, 0, 0, 0.1);  /*Slightly different background*/
+    }
+
+    section:nth-child(3) { /* Style for the third section */
+       background-color: rgba(0, 0, 0, 0.2);  /*Another slightly different background*/
+    }
+
+    /* Add more section styles as needed */
+
+    .report {
+        /* Styles for the report content */
+        color: #ddd; /*  Light text for readability on dark background */
+        line-height: 1.6;
+        max-width: 800px; /*  Limit width for readability */
+        margin: 0 auto;  /*  Center */
+        padding: 20px;
+    }
+    
+    .report h3 {
+        color: #fff; /*  Slightly brighter for headings */
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+    }
+    .report ul, .report ol {
+        color: #ddd;
+        padding-left: 20px;
+    }
+    .report li{
+        margin-bottom: 0.5em;
+    }
+    footer {
+        background-color: rgba(0, 0, 0, 0.6); /*  Semi-transparent black */
+        backdrop-filter: blur(5px);  /*  Slight blur */
+        color: white;
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        z-index: 100;
+    }
+    footer ul{
+        list-style: none;
+    }
+    footer a {
+        color: white;
+    }
+    /* Add styles for insight cards on the index page (if needed) */
+    #insights-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    #insights-list li {
+      margin-bottom: 10px;
+    }
+    
+    #insights-list a {
+      color: #00aaff; /*  Or your desired link color */
+      text-decoration: none;
+    }
+    
+    #insights-list a:hover {
+      text-decoration: underline;
+    }
