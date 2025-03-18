@@ -56,6 +56,20 @@ header {
     z-index: 100; /*  Ensure it's above other content */
 }
 
+.logo {
+    display: flex; /*  Use flexbox for alignment */
+    align-items: center; /*  Vertically center the logo and text */
+    color: white; /*  Set text color */
+    text-decoration: none; /*  Remove underline from the link */
+}
+
+.logo-text {
+    font-size: 1.8em;        /* Adjust as needed */
+    font-weight: bold;
+    letter-spacing: 2px;   /* Add letter spacing */
+    font-family: 'Source Sans Pro', sans-serif; /* Example font - choose your own */
+}
+
 .logo img {
     height: 50px;
     color: white;
