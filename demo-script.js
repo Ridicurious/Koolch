@@ -1,127 +1,179 @@
-// --- Data (replace with your actual topics) ---
-const availableTopics = [
-    "Artificial Intelligence",
-    "Machine Learning",
-    "Cybersecurity",
-    "Data Analytics",
-    "Cloud Computing",
-    "Blockchain",
-    "Internet of Things (IoT)",
-    "Augmented Reality (AR)",
-    "Virtual Reality (VR)",
-    "Robotics"
-];
-
-const topicSuggestions = {
-    "Artificial Intelligence": ["Machine Learning", "Data Analytics", "Robotics"],
-    "Machine Learning": ["Artificial Intelligence", "Data Analytics", "Deep Learning"],
-    "Cybersecurity": ["Network Security", "Data Privacy", "Ethical Hacking"],
-    // Add more suggestions
+// --- Data (Simulating a more complex data structure) ---
+const topicData = {
+    "Artificial Intelligence": { suggested: ["Machine Learning", "Data Analytics", "Robotics", "Deep Learning", "Natural Language Processing"] },
+    "Machine Learning": { suggested: ["Artificial Intelligence", "Data Analytics", "Deep Learning", "Reinforcement Learning", "Supervised Learning"] },
+    "Cybersecurity": { suggested: ["Network Security", "Data Privacy", "Ethical Hacking", "Cryptography", "Malware Analysis"] },
+    "Data Analytics": { suggested: ["Machine Learning", "Artificial Intelligence", "Data Visualization", "Big Data", "Statistical Modeling"] },
+    "Cloud Computing": { suggested: ["AWS", "Azure", "Google Cloud", "Serverless", "Containerization"] },
+    "Blockchain": { suggested: ["Cryptography", "Distributed Systems", "Smart Contracts", "Cryptocurrency", "Decentralized Applications"] },
+    "Internet of Things (IoT)": { suggested: ["Embedded Systems", "Sensors", "Networking", "Cloud Computing", "Data Analytics"] },
+    "Augmented Reality (AR)": { suggested: ["Computer Vision", "Mobile Development", "3D Modeling", "User Interface Design", "Game Development"] },
+    "Virtual Reality (VR)": { suggested: ["Computer Vision", "3D Modeling", "Game Development", "User Interface Design", "Immersive Experiences"] },
+    "Robotics": { suggested: ["Artificial Intelligence", "Machine Learning", "Embedded Systems", "Control Systems", "Computer Vision"] },
+    // Add more topics and suggestions here
 };
 
-// --- DOM Elements ---
-const availableTopicsList = document.getElementById('available-topics');
-const selectedTopicsList = document.getElementById('selected-topics');
-const suggestedTopicsList = document.getElementById('suggested-topics');
-const viewReportButton = document.getElementById('view-report-button');
-
-// --- State ---
+// Initial available topics (can be a subset of all topics)
+let availableTopics = Object.keys(topicData);
+let suggestedTopics = [];
 let selectedTopics = [];
+
+// --- DOM Elements ---
+const availableTopicsContainer = document.getElementById('available-topics');
+const selectedTopicsContainer = document.getElementById('selected-topics');
+const viewReportButton = document.getElementById('view-report-button');
+const thinkingOverlay = document.getElementById('thinking-overlay'); // Get the overlay
 
 // --- Functions ---
 
-function renderTopics() {
-    availableTopicsList.innerHTML = ''; // Clear existing lists
-    selectedTopicsList.innerHTML = '';
-    suggestedTopicsList.innerHTML = '';
+function showThinkingOverlay() {
+    thinkingOverlay.classList.add('active');
+}
 
-    availableTopics.forEach(topic => {
-        const listItem = document.createElement('li');
-        listItem.textContent = topic;
-        listItem.classList.add('available-topic'); // Add class for styling
-        listItem.addEventListener('click', () => selectTopic(topic));
-        availableTopicsList.appendChild(listItem);
+function hideThinkingOverlay() {
+    thinkingOverlay.classList.remove('active');
+}
+
+function renderTopics() {
+    availableTopicsContainer.innerHTML = '';
+    selectedTopicsContainer.innerHTML = '';
+
+    // Combine available and suggested topics, removing duplicates and selected topics.
+    const allAvailable = [...new Set([...availableTopics, ...suggestedTopics])].filter(topic => !selectedTopics.includes(topic));
+
+    allAvailable.forEach(topic => {
+        const tag = document.createElement('div');
+        tag.textContent = topic;
+        let tagClass = 'tag';
+        if (suggestedTopics.includes(topic)) {
+            tagClass += ' suggested'; // Add 'suggested' class
+        }
+        tag.className = tagClass;
+        tag.setAttribute('draggable', true);
+        tag.setAttribute('data-topic', topic);
+        availableTopicsContainer.appendChild(tag);
     });
 
     selectedTopics.forEach(topic => {
-        const listItem = document.createElement('li');
-        listItem.textContent = topic;
-        listItem.classList.add('selected-topic'); // Add class for styling
-
-        const removeButton = document.createElement('span');
-        removeButton.textContent = 'x';
-        removeButton.classList.add('remove-button');
-        removeButton.addEventListener('click', (event) => {
-             event.stopPropagation(); //  Prevent the li click handler from firing
-            removeTopic(topic);
-        });
-        listItem.appendChild(removeButton);
-
-        selectedTopicsList.appendChild(listItem);
+      const tag = document.createElement('div');
+      tag.textContent = topic;
+      tag.className = 'tag selected';
+      tag.setAttribute('draggable', true);
+      tag.setAttribute('data-topic', topic);
+      selectedTopicsContainer.appendChild(tag);
     });
-    renderSuggestedTopics();
-
-}
-function renderSuggestedTopics() {
-  suggestedTopicsList.innerHTML = ''; // Clear previous suggestions
-  const suggestions = new Set(); // Use a Set to avoid duplicates
-
-  selectedTopics.forEach(selectedTopic => {
-    if (topicSuggestions[selectedTopic]) {
-      topicSuggestions[selectedTopic].forEach(suggestion => {
-        if (!selectedTopics.includes(suggestion) && availableTopics.includes(suggestion)) {
-          suggestions.add(suggestion);
-        }
-      });
-    }
-  });
-
-  suggestions.forEach(suggestion => {
-    const listItem = document.createElement('li');
-    listItem.textContent = suggestion;
-    listItem.classList.add('suggested-topic'); // Add class for styling
-    listItem.addEventListener('click', () => selectTopic(suggestion));
-    suggestedTopicsList.appendChild(listItem);
-  });
-}
-
-function selectTopic(topic) {
-    if (!selectedTopics.includes(topic)) {
-        selectedTopics.push(topic);
-        //  Remove from availableTopics (optional, but cleaner)
-        const index = availableTopics.indexOf(topic);
-        if (index > -1) {
-            availableTopics.splice(index, 1);
-        }
-
-        renderTopics(); // Re-render both lists
-        updateViewReportButton();
-    }
-}
-
-function removeTopic(topic) {
-    const index = selectedTopics.indexOf(topic);
-    if (index > -1) {
-        selectedTopics.splice(index, 1);
-        availableTopics.push(topic); // Add back to available topics
-        renderTopics();
-        updateViewReportButton();
-    }
 }
 
 function updateViewReportButton() {
-    viewReportButton.disabled = selectedTopics.length === 0;
+  const hasSelectedTopics = selectedTopics.length > 0;
+  viewReportButton.disabled = !hasSelectedTopics;
+  viewReportButton.setAttribute('aria-disabled', !hasSelectedTopics);
 }
 
-// --- Event Listeners ---
+function updateAvailableTopics() {
+    // 1.  Get suggestions based on selectedTopics.
+    suggestedTopics = []; // Reset suggestions
+    selectedTopics.forEach(topic => {
+        if (topicData[topic] && topicData[topic].suggested) {
+            suggestedTopics.push(...topicData[topic].suggested);
+        }
+    });
+        // 2. Filter to remove duplicates and already selected topics
+    suggestedTopics = [...new Set(suggestedTopics)].filter(topic => !selectedTopics.includes(topic));
 
+        //3. Simulate the basic available topics
+    availableTopics = Object.keys(topicData).filter(topic => !selectedTopics.includes(topic) && !suggestedTopics.includes(topic) );
+}
+
+
+// --- Drag and Drop with SortableJS ---
+function initDragAndDrop() {
+    new Sortable(availableTopicsContainer, {
+        group: {
+            name: 'shared',
+            pull: 'clone',
+            put: false, // Prevent dropping into available topics
+        },
+        animation: 150,
+        sort: false, // Disable sorting within the available topics container
+        onClone: function (evt) {
+            // Optional:  Could add a visual cue here if needed.
+        },
+		onAdd: function (evt) {
+			const topic = evt.item.dataset.topic;
+
+				if (!selectedTopics.includes(topic)) {
+					selectedTopics.push(topic);
+					showThinkingOverlay(); // Show the overlay
+					// Simulate AI "thinking"
+					setTimeout(() => {
+					  updateAvailableTopics();
+					  renderTopics();
+					  updateViewReportButton();
+					  hideThinkingOverlay(); // Hide the overlay
+					}, 1000); // 1-second delay
+
+				}else{
+				  renderTopics(); //just re-render, to not duplicate tags.
+				}
+
+		}
+    });
+
+    new Sortable(selectedTopicsContainer, {
+        group: 'shared',
+        animation: 150,
+		onAdd: function (evt) {
+			const topic = evt.item.dataset.topic;
+
+				if (!selectedTopics.includes(topic)) { //prevent duplicates
+					selectedTopics.push(topic);
+					showThinkingOverlay();
+					setTimeout(() => {
+						updateAvailableTopics();
+						renderTopics();
+						updateViewReportButton();
+						hideThinkingOverlay();
+					}, 1000);
+
+				}else{
+					renderTopics();
+				}
+		},
+		onRemove: function(evt) {
+			const topic = evt.item.dataset.topic;
+			const index = selectedTopics.indexOf(topic);
+			if (index > -1) {
+				selectedTopics.splice(index, 1);
+				showThinkingOverlay();
+				setTimeout(() => {
+					updateAvailableTopics();
+					renderTopics();
+					updateViewReportButton();
+					hideThinkingOverlay();
+				}, 1000);
+			}
+		}
+    });
+}
+
+// --- Event listeners ---
 viewReportButton.addEventListener('click', () => {
-    //  Handle what happens when the button is clicked (e.g., generate report, show modal, etc.)
-    alert("Generating report for: " + selectedTopics.join(', '));
+    viewReportButton.disabled = true;
+    viewReportButton.textContent = 'Generating Report...'; // Provide feedback
+
+    setTimeout(() => { // Simulate report generation
+        alert("Generating report for: " + selectedTopics.join(', '));
+        viewReportButton.disabled = false;
+        viewReportButton.textContent = 'View Report';
+    }, 2000);
 });
 
-// --- Initial Render ---
+// --- Initialization ---
 renderTopics();
+initDragAndDrop();
+updateViewReportButton(); // Ensure button is in correct state initially
+
 // --- Component Loading ---
 function loadComponent(url, containerId) {
     return fetch(url)
@@ -131,7 +183,6 @@ function loadComponent(url, containerId) {
         })
         .catch(error => console.error('Error loading component:', error));
 }
-
 // --- Initialization ---
 Promise.all([
 	loadComponent('components/header.html', 'header-container'),
