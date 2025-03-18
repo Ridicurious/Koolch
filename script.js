@@ -1,18 +1,101 @@
-// --- (Canvas animation code - NO CHANGES HERE) ---
-// --- Canvas Animation (remains largely the same) ---
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let nodes = [];
-const nodeCount = 100;
-const maxDistance = 100;
-const pinkNodeCount = 5; // Number of pink nodes
+// --- Component Loading ---
+function loadComponent(url, containerId) {
+    return fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById(containerId).innerHTML = html;
+        })
+        .catch(error => console.error('Error loading component:', error));
+}
+
+// --- Dynamic Insight Loading ---
+function loadInsight(insightId) {
+    fetch(`insights/${insightId}.json`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Load the template *first* to ensure the canvas exists.
+            return fetch('insights/template.html')
+                .then(response => response.text())
+                .then(templateHtml => {
+                    // Replace *only* the main content, NOT the entire document.
+                    document.getElementById('main-content').innerHTML = templateHtml;
+                    document.getElementById('report-content').innerHTML = data.report_content;
+
+                    // Load header and footer *within* the main-content
+                    return Promise.all([
+                        loadComponent('components/header.html', 'header-container'),
+                        loadComponent('components/footer.html', 'footer-container')
+                    ]);
+                });
+        })
+        .then(() => {
+             // *After* header/footer are loaded, re-initialize the animation.
+            initAnimation();
+        })
+        .catch(error => {
+            console.error('Error fetching or rendering insight:', error);
+            document.getElementById('main-content').innerHTML = '<p>Insight not found.</p>';
+        });
+}
+
+
+function loadInsightList() {
+    return fetch('insights/list.json')
+      .then(response => response.json())
+      .then(insights => {
+        const listElement = document.getElementById('insight-links');
+        insights.forEach(insight => {
+          const listItem = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = '#'; // Use '#' to prevent default navigation
+          link.textContent = insight.title;
+          link.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent the '#' from jumping to the top
+            loadInsight(insight.id);
+          });
+          listItem.appendChild(link);
+          listElement.appendChild(listItem);
+        });
+      })
+      .catch(error => console.error('Error fetching insight list:', error));
+}
+
+// --- Canvas Animation Initialization ---
+let canvas, ctx, nodes, nodeCount, maxDistance, pinkNodeCount;
+
+function initAnimation() {
+    canvas = document.getElementById('canvas');
+    if (!canvas) {
+        console.error("Canvas element not found!");  // Important check!
+        return;
+    }
+    ctx = canvas.getContext('2d');
+    nodes = [];
+    nodeCount = 100;
+    maxDistance = 100;
+    pinkNodeCount = 5;
+
+    resizeCanvas(); // Call resizeCanvas *before* creating nodes
+
+    for (let i = 0; i < nodeCount; i++) {
+        nodes.push(new Node());
+    }
+    for (let i = 0; i < pinkNodeCount; i++) {
+        nodes[Math.floor(Math.random() * nodeCount)].color = "#e62a8e";
+    }
+
+    animate(); // Start the animation
+}
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
 class Node {
     constructor() {
@@ -39,15 +122,8 @@ class Node {
     }
 }
 
-for (let i = 0; i < nodeCount; i++) {
-    nodes.push(new Node());
-}
-for (let i = 0; i < pinkNodeCount; i++) {
-    nodes[Math.floor(Math.random() * nodeCount)].color = "#e62a8e";
-}
-
 function drawLines() {
-    for (let i = 0; i < nodes.length; i++) {
+   for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
             const dx = nodes[i].x - nodes[j].x;
             const dy = nodes[i].y - nodes[j].y;
@@ -86,7 +162,6 @@ function drawLines() {
         }
     }
 }
-
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     nodes.forEach(node => {
@@ -98,77 +173,22 @@ function animate() {
 }
 
 
-// --- Component Loading ---
-function loadComponent(url, containerId) {
-    return fetch(url)
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById(containerId).innerHTML = html;
-        })
-        .catch(error => console.error('Error loading component:', error));
-}
+// --- Initialization (Handles both index and insight pages) ---
 
-// --- Dynamic Insight Loading (using iframe) ---
-function loadInsight(insightId) {
-  const mainContent = document.getElementById('main-content');
-  mainContent.innerHTML = `<iframe src="insights/template.html?id=${insightId}" width="100%" height="800px" frameborder="0"></iframe>`;
-}
-
-function loadInsightList() {
-    return fetch('insights/list.json')
-      .then(response => response.json())
-      .then(insights => {
-        const listElement = document.getElementById('insight-links');
-        insights.forEach(insight => {
-          const listItem = document.createElement('li');
-          const link = document.createElement('a');
-          link.href = '#';
-          link.textContent = insight.title;
-          link.addEventListener('click', (event) => {
-            event.preventDefault();
-            loadInsight(insight.id);
-          });
-          listItem.appendChild(link);
-          listElement.appendChild(listItem);
-        });
-      })
-      .catch(error => console.error('Error fetching insight list:', error));
-}
-
-// --- Initialization ---
-if (window.location.pathname === '/insights/template.html') {
-  // We are INSIDE the iframe. Load header, footer, and content.
-  const urlParams = new URLSearchParams(window.location.search);
-  const insightId = urlParams.get('id');
-
-  if (insightId) {
-    fetch(`${insightId}.json`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('report-content').innerHTML = data.report_content;
-      })
-      .catch(error => {
-        console.error('Error fetching insight data:', error);
-        document.getElementById('report-content').innerHTML = '<p>Insight data not found.</p>';
-      });
-  } else {
-    document.getElementById('report-content').innerHTML = '<p>No insight ID specified.</p>';
-  }
-    loadComponent('../components/header.html', 'header-container');
-	loadComponent('../components/footer.html', 'footer-container');
-}else {
-    // We're on the index page.  Load header and footer, *then* the list and animation.
+if (window.location.pathname.includes('/insights/')) {
+    // We're on an insight page. Extract the ID.
+    const insightId = window.location.pathname.split('/').pop().replace('.html', '');
+    loadInsight(insightId);
+} else {
+    // We're on the index page.
     Promise.all([
         loadComponent('components/header.html', 'header-container'),
         loadComponent('components/footer.html', 'footer-container')
     ])
+    .then(() => loadInsightList())
     .then(() => {
-        // *Now* that the header and footer are loaded, load the insight list.
-        return loadInsightList();
-    })
-    .then(() => {
-        //  Finally, start the animation.
-        animate();
+        initAnimation();
+        window.addEventListener('resize', resizeCanvas); // Add resize listener here
     })
     .catch(error => console.error("Error during initialization:", error));
 }
