@@ -26,15 +26,13 @@ function loadInsight(insightId) {
                     document.getElementById('main-content').innerHTML = templateHtml;
                     document.getElementById('report-content').innerHTML = data.report_content;
 
-                    // Load header and footer *within* the main-content
-                    return Promise.all([
-                        loadComponent('components/header.html', 'header-container'),
-                        loadComponent('components/footer.html', 'footer-container')
-                    ]);
+                    // Load header *within* the main-content
+                    return loadComponent('components/header.html', 'header-container');
+
                 });
         })
         .then(() => {
-             // *After* header/footer are loaded, re-initialize the animation.
+             // *After* header is loaded, re-initialize the animation.
             initAnimation();
         })
         .catch(error => {
