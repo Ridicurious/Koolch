@@ -15,8 +15,20 @@
     </div>
 
     <div id="footer-container"></div>
-    <canvas id="canvas"></canvas> <!- Re-add the canvas -->
     <script src="../utils.js"></script>
-    <script src="../script.js"></script> <!--  Relative path to script.js -->
+    <script>
+        // Load header and footer *within the iframe*
+        function loadComponent(url, containerId) {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById(containerId).innerHTML = html;
+                })
+                .catch(error => console.error('Error loading component:', error));
+        }
+
+        loadComponent('../components/header.html', 'header-container');
+        loadComponent('../components/footer.html', 'footer-container');
+    </script>
 </body>
 </html>
