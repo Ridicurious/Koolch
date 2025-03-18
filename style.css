@@ -52,7 +52,7 @@ header {
     width: 100%;
     box-sizing: border-box;
     /* background-color: rgba(0, 0, 0, 0.6);  */
-    backdrop-filter: blur(10px); /*  Add a blur effect (modern browsers) */
+    /*backdrop-filter: blur(10px);   Add a blur effect (modern browsers) */
     z-index: 100; /*  Ensure it's above other content */
 }
 
