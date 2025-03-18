@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule a Demo - AsturLabs AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="container" id="main-content">
+        <section class="demo-page">
+            <h1>Schedule a Demo</h1>
+            <p>Select your topics of interest to tailor your demo experience:</p>
+
+            <div class="topic-selection">
+                <div class="topic-column">
+                    <h2>Available Topics</h2>
+                    <ul id="available-topics">
+                        <!-- Topics will be populated here by JavaScript -->
+                    </ul>
+                </div>
+                <div class="topic-column">
+                    <h2>Selected Topics</h2>
+                    <ul id="selected-topics">
+                        <!-- Selected topics will appear here -->
+                    </ul>
+                </div>
+                <div class="topic-column">
+                    <h2>Suggested Topics</h2>
+                    <ul id="suggested-topics">
+                        <!-- Suggested topics will appear here -->
+                    </ul>
+                </div>
+            </div>
+
+            <button id="view-report-button" disabled>View Report</button>
+        </section>
+    </div>
+
+    <div id="footer-container"></div>
+	<canvas id="canvas"></canvas>
+    <script src="utils.js"></script>
+    <script src="demo-script.js"></script> <!-- Separate script for demo page -->
+    <script src="script.js"></script>
+</body>
+</html>
