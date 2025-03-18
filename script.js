@@ -173,20 +173,39 @@ function animate() {
 
 // --- Initialization (Handles both index and insight pages) ---
 
-if (window.location.pathname.includes('/insights/')) {
-    // We're on an insight page. Extract the ID.
-    const insightId = window.location.pathname.split('/').pop().replace('.html', '');
-    loadInsight(insightId);
-} else {
-    // We're on the index page.
-    Promise.all([
-        loadComponent('components/header.html', 'header-container'),
-        loadComponent('components/footer.html', 'footer-container')
-    ])
-    .then(() => loadInsightList())
-    .then(() => {
-        initAnimation();
-        window.addEventListener('resize', resizeCanvas); // Add resize listener here
-    })
-    .catch(error => console.error("Error during initialization:", error));
+function handleNavigation() {
+	if (window.location.pathname.includes('/insights/')) {
+		// We're on an insight page. Extract the ID.
+		const insightId = window.location.pathname.split('/').pop().replace('.html', '');
+		loadInsight(insightId);
+	} else if (window.location.pathname.includes('/demo.html')) {
+		// The canvas is initialized in demo-script.js
+		Promise.all([
+			loadComponent('components/header.html', 'header-container'),
+			loadComponent('components/footer.html', 'footer-container')
+		])
+		.then(() => {
+			//  Finally, start the animation.
+			initAnimation();
+			window.addEventListener('resize', resizeCanvas); // Add resize listener here
+		})
+		.catch(error => console.error("Error during initialization:", error));
+	}else {
+		// We're on the index page.
+		Promise.all([
+			loadComponent('components/header.html', 'header-container'),
+			loadComponent('components/footer.html', 'footer-container')
+		])
+		.then(() => loadInsightList())
+		.then(() => {
+			initAnimation();
+			window.addEventListener('resize', resizeCanvas); // Add resize listener here
+		})
+		.catch(error => console.error("Error during initialization:", error));
+	}
 }
+
+handleNavigation(); // Call on initial load
+
+// Add event listener for URL changes (for back/forward buttons)
+window.addEventListener('popstate', handleNavigation);
