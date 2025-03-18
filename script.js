@@ -1,3 +1,4 @@
+// --- (Canvas animation code - NO CHANGES HERE) ---
 // --- Canvas Animation (remains largely the same) ---
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -99,7 +100,7 @@ function animate() {
 
 // --- Component Loading ---
 function loadComponent(url, containerId) {
-    return fetch(url) // Return the promise!
+    return fetch(url)
         .then(response => response.text())
         .then(html => {
             document.getElementById(containerId).innerHTML = html;
@@ -107,54 +108,24 @@ function loadComponent(url, containerId) {
         .catch(error => console.error('Error loading component:', error));
 }
 
-// --- Dynamic Insight Loading ---
+// --- Dynamic Insight Loading (using iframe) ---
 function loadInsight(insightId) {
-    fetch(`insights/${insightId}.json`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            fetch('insights/template.html')
-                .then(response => response.text())
-                .then(templateHtml => {
-                    document.documentElement.innerHTML = templateHtml;
-                    document.getElementById('report-content').innerHTML = data.report_content;
-                    loadComponent('components/header.html', 'header-container');
-                    loadComponent('components/footer.html', 'footer-container');
-
-                    // Reinitialize nodes and animation
-                    nodes = []; // Clear existing nodes
-                    for (let i = 0; i < nodeCount; i++) {
-                        nodes.push(new Node());
-                    }
-                    for (let i = 0; i < pinkNodeCount; i++) {
-                        nodes[Math.floor(Math.random() * nodeCount)].color = "#e62a8e";
-                    }
-					resizeCanvas();
-                    animate(); // Restart the animation
-                });
-        })
-        .catch(error => {
-            console.error('Error fetching insight:', error);
-            document.getElementById('report-content').innerHTML = '<p>Insight not found.</p>';
-        });
+  const mainContent = document.getElementById('main-content');
+  mainContent.innerHTML = `<iframe src="insights/template.html?id=${insightId}" width="100%" height="800px" frameborder="0"></iframe>`;
 }
 
 function loadInsightList() {
-    return fetch('insights/list.json')  // Return the promise!
+    return fetch('insights/list.json')
       .then(response => response.json())
       .then(insights => {
         const listElement = document.getElementById('insight-links');
         insights.forEach(insight => {
           const listItem = document.createElement('li');
           const link = document.createElement('a');
-          link.href = '#'; // Use '#' to prevent default navigation
+          link.href = '#';
           link.textContent = insight.title;
           link.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent the '#' from jumping to the top
+            event.preventDefault();
             loadInsight(insight.id);
           });
           listItem.appendChild(link);
@@ -163,15 +134,29 @@ function loadInsightList() {
       })
       .catch(error => console.error('Error fetching insight list:', error));
 }
+
 // --- Initialization ---
+if (window.location.pathname === '/insights/template.html') {
+  // We are INSIDE the iframe. Load header, footer, and content.
+  const urlParams = new URLSearchParams(window.location.search);
+  const insightId = urlParams.get('id');
 
-
-//  Check if we're on an insight page or the index page.
-if (window.location.pathname.includes('insights/')) {
-    //  We're on what *should* be an insight page.  Get the ID from the URL.
-    const insightId = window.location.pathname.split('/').pop().replace('.html', ''); // Remove .html
-    loadInsight(insightId); // Load the insight
-} else {
+  if (insightId) {
+    fetch(`${insightId}.json`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('report-content').innerHTML = data.report_content;
+      })
+      .catch(error => {
+        console.error('Error fetching insight data:', error);
+        document.getElementById('report-content').innerHTML = '<p>Insight data not found.</p>';
+      });
+  } else {
+    document.getElementById('report-content').innerHTML = '<p>No insight ID specified.</p>';
+  }
+    loadComponent('../components/header.html', 'header-container');
+	loadComponent('../components/footer.html', 'footer-container');
+}else {
     // We're on the index page.  Load header and footer, *then* the list and animation.
     Promise.all([
         loadComponent('components/header.html', 'header-container'),
