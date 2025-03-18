@@ -79,6 +79,7 @@ header {
     .logo svg {
     width: 50px;
     height: auto;
+    margin-right: 15px;
     transition: transform 0.3s ease;
     }
 
